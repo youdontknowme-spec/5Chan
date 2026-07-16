@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>5chan</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column; /* Stacks text vertically */
+      justify-content: flex-start; /* Aligns strictly to the top */
+      align-items: center; /* Centers elements horizontally */
+      text-align: center; /* Centers individual lines of text */
+      margin: 0;
+      min-height: 100vh;
+      font-family: sans-serif;
+      padding-top: 20px;
+    } 
+
+    /* Top navigation bar for the auth button */
+    .header-nav {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      padding: 10px 40px;
+      box-sizing: border-box;
+    }
+
+    .text-container {
+      max-width: 600px; /* Prevents long paragraphs on wide screens */
+      padding: 0 20px;
+      margin-top: 30px;
+    }
+
+    /* Simple fallback styling for the sign-in button before Clerk loads */
+    #auth-links button {
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+    }
+  </style>
+
+  <!-- 1. Load the Clerk JS SDK from the CDN -->
+  <script
+    async
+    crossorigin="anonymous"
+    data-clerk-publishable-key="pk_test_cHJvdWQtd2FsbGFieS0wLmNsZXJrLmFjY291bnRzLmRldiQ"
+    src="https://5chan.com"
+    type="text/javascript">
+  </script>
+</head>
+<body>
+
+  <!-- Navigation bar holding the authentication container -->
+  <div class="header-nav">
+    <div id="auth-links"></div>
+  </div>
+
+  <!-- Wrapped text elements to keep layout clean -->
+  <div class="text-container">
+    <h1>Welcome to 5Chan</h1>
+    <p>Thank you for visiting! Look at the bottom right corner of your screen to join our live community chat room.</p>
+  </div>
+
+  <!-- RumbleTalk Native Floating Chat Widget Code -->
+  <div id="rt-f07a4d817cdfcde34ff7c3d5da310e8e" 
+       data-floating="true" 
+       data-side="right" 
+       data-width="700" 
+       data-height="500" 
+       data-image="https://d1pfint8izqszg.cloudfront.net/images/floating/blue-circle-floating.png" 
+       data-close-image="https://d1pfint8izqszg.cloudfront.net/images/floating/blue-circle-close.png" 
+       data-user-counter="35,12.5" 
+       data-user-counter-width="75" 
+       data-user-counter-color="#fff" 
+       data-message-counter="10,70">
+  </div>
+
+  <script src="https://rumbletalk.com/client/?81JiU:jh"></script>
+
+  <!-- 2. Initialize Clerk and manage UI states -->
+  <script>
+    window.addEventListener('load', async function () {
+      // Wait until the Clerk library is fully loaded on the window object
+      while (!window.Clerk) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+
+      // Initialize the Clerk instance
+      await window.Clerk.load();
+
+      const authLinksContainer = document.getElementById('auth-links');
+
+      if (window.Clerk.user) {
+        // If user is logged in, mount the pre-built User Button component
+        window.Clerk.mountUserButton(authLinksContainer);
+      } else {
+        // If user is logged out, create a custom Sign In/Up button
+        const signInButton = document.createElement('button');
+        signInButton.innerText = 'Sign In / Sign Up';
+        
+        signInButton.addEventListener('click', () => {
+          // Open the pre-built Clerk modal modal window
+          window.Clerk.openSignIn();
+        });
+
+        authLinksContainer.appendChild(signInButton);
+      }
+    });
+  </script>
+
+</body>
+</html>
